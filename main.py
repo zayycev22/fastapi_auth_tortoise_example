@@ -3,17 +3,19 @@ from fastapi import FastAPI, Depends, Request
 from fastapi.security import APIKeyHeader
 from fastapi_auth import FastApiAuth
 from fastapi_auth.authenticators import Authenticator
+from fastapi_auth.backends import Backend
 from tortoise.contrib.fastapi import register_tortoise
-from auth.backend import AuthBackend, get_backend
+from auth.backend import get_backend
 from auth.signals import signal
 from settings import DATABASE_URL
-from auth.app import auth_router
+from auth.router import auth_router
+from books.router import book_router
 
 api_key_header = APIKeyHeader(name='Authorization', auto_error=False)
 fastapi_auth = FastApiAuth()
 
 
-async def auth_dependency(backend: AuthBackend = Depends(get_backend)):
+async def auth_dependency(backend: Backend = Depends(get_backend)):
     yield Authenticator(backend=backend)
 
 
@@ -31,13 +33,14 @@ async def startup():
 
 register_tortoise(
     app,
-    modules={"models": ["auth.models"]},
+    modules={"models": ["auth.models", "books.models"]},
     db_url=DATABASE_URL,
+    generate_schemas=True,
     add_exception_handlers=True,
 )
 
 app.include_router(auth_router, tags=["authentication"])
-
+app.include_router(book_router, tags=["books"])
 
 if __name__ == "__main__":
-    uvicorn.run(app, port=8000)
+    uvicorn.run(app, port=8000, host="0.0.0.0")
