@@ -46,7 +46,7 @@ async def register(data: UserCreate, user_manager: Manager = Depends(get_user_ma
                  response_model=DefaultLimitOffsetPagination.response_schema(user_schema=UserSerializer))
 async def users(request: Request):
     clients = await User.all()
-    filtered_data = OrderingFilter("id", "email").filter_queryset(request, clients)
+    filtered_data = await OrderingFilter("id", "email").filter_queryset(request, clients)
     paginator = DefaultLimitOffsetPagination(serializer=UserSerializer, request=request)
     data = await paginator.get_paginated_response(filtered_data)
     return data
