@@ -6,12 +6,12 @@ from fastapi_auth.tortoise_models.serializers import ModelSerializer
 class ArticleSerializer(ModelSerializer):
     class Meta:
         model = Article
-        fields = "__all__"
+        fields = ("id", "name",)
 
 
 class BookSerializer(ModelSerializer):
     author: str
-    article: Optional[ArticleSerializer.response_schema()]
+    article: Optional[ArticleSerializer.response_schema()] = ArticleSerializer
 
     async def get_author(self, instance: Book) -> str:
         user = await instance.author
