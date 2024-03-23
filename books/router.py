@@ -44,7 +44,7 @@ async def book_instance(request: Request, book_id: int):
         return JSONResponse({"status": "error", "detail": "Book does not exists"}, status_code=404)
     else:
         serializer = BookSerializer(instance=book)
-        # Note: be careful with JSONResponse, it don`t serialize pydantic models if depth more than 1
+        # Note: be careful with JSONResponse, it don`t serialize pydantic models
         return {"status": "OK", "detail": await serializer.data}
 
 
