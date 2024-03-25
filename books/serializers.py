@@ -1,6 +1,6 @@
 from typing import Optional
 from books.models import Book, Article
-from fastapi_auth.tortoise_models.serializers import ModelSerializer
+from fastapi_auth.serializers.tortoise.serializers import ModelSerializer
 
 
 class ArticleSerializer(ModelSerializer):
